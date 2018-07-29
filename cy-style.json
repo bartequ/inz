@@ -1,0 +1,29 @@
+[
+    {
+      "selector": "node",
+      "style": {
+        "height": 40,
+        "width": 40,
+        "background-color": "#afeeee",
+        "label": "data(label)",
+        "border-color": "black"
+      }
+    },
+  
+    {
+      "selector": "edge",
+      "style": {
+        "label": "data(label)",
+        "width": 3,
+        "line-color": "#ccc"
+      }
+    },
+  
+    {
+      "selector": ".top-center",
+      "style": {
+        "text-valign": "top",
+        "text-halign": "center"
+      }
+    }
+  ]
