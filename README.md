@@ -1,1 +1,2 @@
-"# inz" 
+Name of the 'MZ_Centracom.tndb' was changed to 'test1.json', 'MZ_AGG_SW_Test.tndb' to 'test.json' to simplify testing. File cytoscape.min.js is file from Cytoscape.js library. XML format was changed to JSON, I didn't write converter yet. To run appllication download files, start server e.g. Apache and type into browser localhost:port/YOUR_CATALOG. Default port is 8080.
+File code.js contains all of the app funcionality.
