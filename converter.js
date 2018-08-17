@@ -74,76 +74,80 @@ fetch('test1.tndb')
     }
     else {
       clusterLength = rs.cluster.length;
-      for (var a=0; a<clusterLength; a++)
+      for (var a=0; a<clusterLength; a++) {
         cluster.push(rs.cluster[a]);
+      }
     }
     for (var i=0; i<clusterLength; i++){
       if (clusterLength > 1){
         loadStructure.push({group: "nodes", data: {id: cluster[i].id, name: rs.cluster[i].name, number: rs.cluster[i].number, radiosystemid: rs.cluster[i].radiosystemid,
                             label: rs.cluster[i].name}, classes: 'cluster'});
       }
-          var msoLength;
-          if (!Array.isArray(cluster[i].mso)){
-            loadStructure.push({group: "nodes", data: {id: cluster[i].mso.id, parent: cluster[i].id, cenpresent: cluster[i].mso.cenpresent, name: cluster[i].mso.name, 
-                                number: cluster[i].mso.number, label: cluster[i].mso.name}, classes: 'mso'});
-            msoLength = 1;
+        var msoLength;
+        if (!Array.isArray(cluster[i].mso)){
+          loadStructure.push({group: "nodes", data: {id: cluster[i].mso.id, parent: cluster[i].id, cenpresent: cluster[i].mso.cenpresent, name: cluster[i].mso.name, 
+                              number: cluster[i].mso.number, label: cluster[i].mso.name}, classes: 'mso'});
+          msoLength = 1;
+        }
+        else {
+          msoLength = cluster[i].mso.length; 
+          for (var a=0; a<msoLength; a++){
+            mso.push(cluster[i].mso[a]);
           }
-          else {
-            msoLength = cluster[i].mso.length; 
-            for (var a=0; a<msoLength; a++)
-              mso.push(cluster[i].mso[a]);
-          }  
-          for (var j=0; j<msoLength; j++){
-            if (msoLength > 1){
-              loadStructure.push({group: "nodes", data: {id: mso[j].id, parent: cluster[i].id, cenpresent: mso[j].cenpresent, name: mso[j].name, 
-                                  number: mso[j].number, label: mso[j].name}, classes: 'mso'});
-              mso.push(cluster[i].mso[j]);
+        }  
+        for (var j=0; j<msoLength; j++){
+          if (msoLength > 1){
+            loadStructure.push({group: "nodes", data: {id: mso[j].id, parent: cluster[i].id, cenpresent: mso[j].cenpresent, name: mso[j].name, 
+                                number: mso[j].number, label: mso[j].name}, classes: 'mso'});
+            mso.push(cluster[i].mso[j]);
           }
         }
         mso = [];
 
           var zoneLength;
-            if (!Array.isArray(cluster[i].zone)){
-              loadStructure.push({group: "nodes", data: {id: cluster[i].zone.id, parent: cluster[i].zone.msoid, clusterid: cluster[i].zone.clusterid, name: cluster[i].zone.name, 
-                                  number:cluster[i].zone.number, siteLink: cluster[i].zone.siteLink, label: cluster[i].zone.name}, classes: 'zone'});
-              zonesNumberNames.push({id: cluster[i].zone.id, number: cluster[i].zone.number});
-              zoneLength = 1;
-              zone.push(cluster[i].zone);
+          if (!Array.isArray(cluster[i].zone)){
+            loadStructure.push({group: "nodes", data: {id: cluster[i].zone.id, parent: cluster[i].zone.msoid, clusterid: cluster[i].zone.clusterid, name: cluster[i].zone.name, 
+                                number:cluster[i].zone.number, siteLink: cluster[i].zone.siteLink, label: cluster[i].zone.name}, classes: 'zone'});
+            zonesNumberNames.push({id: cluster[i].zone.id, number: cluster[i].zone.number});
+            zoneLength = 1;
+            zone.push(cluster[i].zone);
+          }
+          else {
+            zoneLength = cluster[i].zone.length; 
+            for (var a=0; a<zoneLength; a++){
+              zone.push(cluster[i].zone[a]);
             }
-            else {
-              zoneLength = cluster[i].zone.length; 
-              for (var a=0; a<zoneLength; a++)
-                zone.push(cluster[i].zone[a]);
+          }
+          for (var k=0; k<zoneLength; k++){
+            if (zoneLength > 1) {
+              loadStructure.push({group: "nodes", data: {id: zone[k].id, parent: zone[k].msoid, clusterid: zone[k].clusterid, name: zone[k].name, 
+                                  number: zone[k].number, siteLink: zone[k].siteLink, label: zone[k].name}, classes:'zone'});
+              zonesNumberNames.push({id: zone[k].id, number: zone[k].number});
+              zone.push(cluster[i].zone[k]);
             }
-            for (var k=0; k<zoneLength; k++){
-              if (zoneLength > 1) {
-                loadStructure.push({group: "nodes", data: {id: zone[k].id, parent: zone[k].msoid, clusterid: zone[k].clusterid, name: zone[k].name, 
-                                    number: zone[k].number, siteLink: zone[k].siteLink, label: zone[k].name}, classes:'zone'});
-                zonesNumberNames.push({id: zone[k].id, number: zone[k].number});
-                zone.push(cluster[i].zone[k]);
-              }
     
-              var siteLength;
-              if (!Array.isArray(zone[k].site)){
-                loadStructure.push({group: "nodes", data: {id: zone[k].site.id, parent: zone[k].site.zoneid, name: zone[k].site.name, number: zone[k].site.number, 
-                                    siteLink: zone[k].site.siteLink}, classes: "site" });
-                siteLength = 1;
-              }
-              else {  
-                siteLength = zone[k].site.length;   
-                for (var a=0; a<siteLength; a++)
-                  site.push(zone[k].site[a]); 
-              }
-              for (var m=0; m<siteLength; m++){
-                if (siteLength > 1) {
-                  loadStructure.push({group: "nodes", data: {id: site[m].id, parent: site[m].zoneid, name: site[m].name, number: site[m].number, 
-                                      siteLink: site[m].siteLink}, classes:'site' });
-                    site.push(zone[k].site[m]);
-                }
-              }
-              site = [];
+            var siteLength;
+            if (!Array.isArray(zone[k].site)){
+              loadStructure.push({group: "nodes", data: {id: zone[k].site.id, parent: zone[k].site.zoneid, name: zone[k].site.name, number: zone[k].site.number, 
+                                  siteLink: zone[k].site.siteLink}, classes: "site" });
+              siteLength = 1;
             }
-            zone = [];
+            else {  
+              siteLength = zone[k].site.length;   
+              for (var a=0; a<siteLength; a++){
+                site.push(zone[k].site[a]); 
+              }
+            }
+            for (var m=0; m<siteLength; m++){
+              if (siteLength > 1) {
+                loadStructure.push({group: "nodes", data: {id: site[m].id, parent: site[m].zoneid, name: site[m].name, number: site[m].number, 
+                                    siteLink: site[m].siteLink}, classes:'site' });
+                  site.push(zone[k].site[m]);
+              }
+            }
+            site = [];
+          }
+          zone = [];
     }
   }
     
