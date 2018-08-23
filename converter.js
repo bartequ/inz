@@ -7,11 +7,7 @@ function findObjectByKey(array, key, value) {
     return null;
 }
 
-
-fetch('test1.tndb')
-.then(response => response.text())
-.then(str => (new window.DOMParser()).parseFromString(str, "text/xml"))
-.then(function xmlToJson(xml) {
+function xmlToJson(xml) {
   var obj = {};
 
   if (xml.nodeType == 1) {
@@ -51,16 +47,13 @@ fetch('test1.tndb')
     if (keys.length === 0) return null;
   }
   return obj;
-})
-.then(function(data){
+}
 
-  var rs = data.DLRadioSystem;
+function loadJsonData(rs) {
+
   var zonesNumberNames = [];
   var cluster = [];
   var loadStructure = [];
-    
-  function loadJsonData() {
-
   var mso = [];
   var zone = [];
   var site = [];
@@ -149,9 +142,12 @@ fetch('test1.tndb')
           }
           zone = [];
     }
-  }
-    
-  function loadJsonInterZoneLinks(){
+    return new Promise(function(resolve, reject) {
+      resolve([rs, loadStructure, zonesNumberNames, cluster]);
+    });
+}
+
+function loadJsonInterZoneLinks(rs, loadStructure, zonesNumberNames, cluster){
       
   if (Array.isArray(rs.interzonelinkbundle)) {
     for (i=0; i<rs.interzonelinkbundle.length; i++) {
@@ -161,9 +157,12 @@ fetch('test1.tndb')
                           target: findObjectByKey(zonesNumberNames, 'number', zoneB).id }, classes: 'interZoneLink'});
     }
   }
-  }
- 
-  function loadJsonIntraZoneLinks() {
+  return new Promise(function(resolve, reject) {
+    resolve([loadStructure, zonesNumberNames, cluster]);
+  });
+}
+
+function loadJsonIntraZoneLinks(loadStructure, zonesNumberNames, cluster) {
 
   var mso = [];
     for (var i=0; i<cluster.length; i++){
@@ -178,36 +177,57 @@ fetch('test1.tndb')
           mso.push(cluster[i].mso[a]);
         }
       }  
-          
+            
       for (var j=0; j<msoLength; j++){
         if ('intraZoneLink' in mso[j] === true) {  
           if (!Array.isArray(mso[j].intraZoneLink)) {
             var zoneA = mso[j].intraZoneLink.zoneAId;
             var zoneB = mso[j].intraZoneLink.zoneBId;
             loadStructure.push({group: "edges", data: { id: mso[j].intraZoneLink.id, source: findObjectByKey(zonesNumberNames, 'number', zoneA).id, 
-                            target: findObjectByKey(zonesNumberNames, 'number', zoneB).id }, classes: 'intraZoneLink'});
+                                target: findObjectByKey(zonesNumberNames, 'number', zoneB).id }, classes: 'intraZoneLink'});
           }
           else {
             for (var k=0; k<mso[j].intraZoneLink.length; k++) {
               var zoneA = mso[j].intraZoneLink[k].zoneAId;
               var zoneB = mso[j].intraZoneLink[k].zoneBId;
               loadStructure.push({group: "edges", data: { id: mso[j].intraZoneLink[k].id, source: findObjectByKey(zonesNumberNames, 'number', zoneA).id, 
-                            target: findObjectByKey(zonesNumberNames, 'number', zoneB).id }, classes: 'intraZoneLink'});
+                                  target: findObjectByKey(zonesNumberNames, 'number', zoneB).id }, classes: 'intraZoneLink'});
             }
           }
         }
       }
       mso = [];
     }
-  }  
+  return loadStructure;
+}  
 
-  loadJsonData();
-  loadJsonInterZoneLinks();
-  loadJsonIntraZoneLinks();
 
-  return loadStructure;  
+Promise.all([
+fetch('test.tndb')
+.then(response => response.text())
+.then(str => (new window.DOMParser()).parseFromString(str, "text/xml"))
+.then(function(dataXml){
+    return xmlToJson(dataXml);
 })
-.then(function(data) {
+.then(function(dataJson){
+  var rs = dataJson.DLRadioSystem;
+  return loadJsonData(rs);
+})
+.then(function(dataNodes) {
+  return loadJsonInterZoneLinks(dataNodes[0], dataNodes[1], dataNodes[2], dataNodes[3]);
+})
+.then(function(dataNodesEdges) {
+  return loadJsonIntraZoneLinks(dataNodesEdges[0], dataNodesEdges[1], dataNodesEdges[2]);
+}),
+    
+fetch('cy-style.json', {mode: 'no-cors'})
+  .then(function(res) {
+    return res.json()
+  })
+])
+.then(function(dataArray) {
+  data = dataArray[0];
+  style = dataArray[1];
   var cy = window.cy = cytoscape({
     container: document.getElementById('cy'),
 
@@ -216,45 +236,8 @@ fetch('test1.tndb')
       animate: false
     },
 
-    style: [
-      {
-        selector: 'node',
-        style: {
-          'background-color': '#ad1a66',
-          'label': 'data(label)'
-        }
-      },
-
-      {
-        selector: ':parent',
-        style: {
-          'background-opacity': 0.333
-        }
-      },
-
-      {
-        selector: 'edge',
-        style: {
-          'width': 3,
-          'line-color': '#fc0f89',
-          'label': 'data(label)'
-        }
-      },
-
-      {
-        selector: '.interZoneLink',
-        style: {
-          'line-color': '#33071e'
-        }
-      },
-      {
-        "selector": ".zone, .cluster",
-        "style": {
-          "text-valign": "top",
-          "text-halign": "center"
-        }
-      }
-    ],
+    style: style,
+    
     elements: data,
 
     ready: function(){
@@ -264,7 +247,7 @@ fetch('test1.tndb')
 
   cy.$('.site').qtip({
     content: function(){
-      for (i=0; i<data.length; i++){
+      for (var i=0; i<data.length; i++){
         if (this.id() == data[i].data.id)
           return 'site number: ' + data[i].data.number + '<br>siteLink: ' + data[i].data.siteLink;
       }  
@@ -278,21 +261,16 @@ fetch('test1.tndb')
     },
     style: {
       classes: 'qtip-bootstrap',
-      tip: {
-        width: 16,
-        height: 8
-      }
     }
   });
 
   cy.$('.zone').qtip({
     content: function(){
-      for (i=0; i<data.length; i++){
+      for (var i=0; i<data.length; i++){
         if (this.id() == data[i].data.id){
           var description = "siteLinks:<br>";
           if (Array.isArray(data[i].data.siteLink)) {
-            for (j=0; j<data[i].data.siteLink.length; j++) {
-              
+            for (var j=0; j<data[i].data.siteLink.length; j++) {
               description += "id: " + data[i].data.siteLink[j].id + "<br>" + "number: " + data[i].data.siteLink[j].number + "<br><br>";
             }
             return description;
@@ -309,10 +287,6 @@ fetch('test1.tndb')
     },
     style: {
       classes: 'qtip-bootstrap',
-      tip: {
-        width: 16,
-        height: 8
-      }
     }
   });
 });

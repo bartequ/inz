@@ -1,0 +1,51 @@
+[
+    {
+      "selector": "node",
+      "style": {
+        "height": 40,
+        "width": 40,
+        "background-color": "#ad1a66",
+        "label": "data(label)",
+        "border-color": "black"
+      }
+    },
+  
+    {
+      "selector": "edge",
+      "style": {
+        "width": 3,
+        "line-color": "#fc0f89",
+        "label": "data(label)"
+      }
+    },
+  
+    {
+      "selector": ".top-center",
+      "style": {
+        "text-valign": "top",
+        "text-halign": "center"
+      }
+    },
+
+    {
+      "selector": ":parent",
+      "style": {
+        "background-opacity": 0.333
+      }
+    },
+
+    {
+      "selector": ".interZoneLink",
+      "style": {
+        "line-color": "#33071e"
+      }
+    },
+	  
+    {
+      "selector": ".zone, .cluster",
+      "style": {
+        "text-valign": "top",
+        "text-halign": "center"
+      }
+    }
+  ]
