@@ -1,6 +1,7 @@
 Name of the 'MZ_Centracom.tndb' was changed to 'test1.json', 'MZ_AGG_SW_Test.tndb' to 'test.json' to simplify testing. File cytoscape.min.js is file from Cytoscape.js library. To run appllication download files, start server e.g. Apache and type into browser localhost:port/YOUR_CATALOG. Default port is 8080.
 File converter.js contains all of the app funcionality, cy-style.json and style.css contain information about styles.
-&lt;div id="cy"&gt;&lt/div&gt; is holder for cytoscape object.
+
+&lt;div id="cy"&gt;&lt;/div&gt; is holder for cytoscape object.
 
 Files test.tndb (or test1.tnsb) are fetched from local folder.
 
