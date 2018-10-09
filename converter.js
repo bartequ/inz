@@ -258,8 +258,6 @@ fetch('cy-style.json', {mode: 'no-cors'})
   var nodesPosition = [];
   var nodesPosition = cy.nodes().map(node => node.position());
 
-  //console.log(nodesPosition);
-
   if (nodesPosition.length == elements.nodes.length) {
     for (var i=0; i<nodesPosition.length; i++) {
       elements.nodes[i].position = {
@@ -273,11 +271,7 @@ fetch('cy-style.json', {mode: 'no-cors'})
       elements.nodes[i].selected = false;
     }
   }
-  console.log('elements');
-  console.log(elements);
 
-
-//--------------------------------------------------------------------------------------
 var layoutPadding = 50;
 var aniDur = 500;
 var easing = 'linear';
@@ -295,32 +289,10 @@ var restoreElesPositions = function( nhood ){
 };
 
 function highlight( node ){
-  console.log('-------------------------------------------------------');
   var nodeId = node.id();
-  console.log(nodeId);
   var childNodes = cy.nodes('node[parent="'+nodeId+'"]');
-  console.log(childNodes);
-  console.log('-------------------------------------------------------');
-
-
-  //var nhood = lastHighlighted = node.closedNeighborhood();
   var nhood = lastHighlighted = childNodes;
   var others = lastUnhighlighted = cy.elements().not( nhood );
-  /*var childrens = [];
-  if (!Array.isArray(node.children)) {
-    childrens[0] = node.children;
-  }
-  else {
-    for (var i=0; i<node.children.length; i++) {
-      childrens[i] = node.children[i];
-    }
-  }
-  console.log('node');
-  console.log(node);
-  console.log('nhood');
-  console.log(nhood);
-  console.log('childrens');
-  console.log(childrens);*/
 
   //przywraca stan poczatkowy, wspolrzedne na podstawie orgPos
   var reset = function(){
@@ -359,14 +331,11 @@ function highlight( node ){
     console.log('runLayout()');
 
    
+    //Proba przypisania klas odpowiadajacych za widocznosc poziom wyzej
     for (var i=0; i<nhood.length; i++) {
-    
       var prop1 = nhood[i]._private.classes._obj.faded;
       var prop2 = nhood[i]._private.classes._obj.hidden;
       var prop3 = nhood[i]._private.classes._obj.highlighted;
-      
-
-
       nhood[i]._private.classes.faded = Boolean(prop1);
       nhood[i]._private.classes.hidden = Boolean(prop2);
       nhood[i]._private.classes.highlighted = Boolean(prop3);
@@ -377,8 +346,7 @@ function highlight( node ){
         console.log('filter');
         console.log(nhood.filter(':visible'));
 
-    var l = nhood.makeLayout({
-      //var l = nhood.makeLayout({  
+    var l = nhood.makeLayout({ 
       name: 'concentric',
       fit: false,
       animate: true,
@@ -402,12 +370,8 @@ function highlight( node ){
       padding: layoutPadding
     });
 
-    //layout.stop();
     l.run();
     var promise = cy.promiseOn('layoutstop');
-
-    
-    console.log('new layout');
 
     return promise;
   };
