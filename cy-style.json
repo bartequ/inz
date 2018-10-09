@@ -1,12 +1,49 @@
 [
+    
+  {
+    "selector": "node",
+    "style": {
+      "height": 40,
+      "width": 40,
+      "background-color": "#15d625",
+      "label": "data(label)",
+      "border-color": "black"
+    }
+  },
+
+
     {
-      "selector": "node",
+      "selector": ".cluster",
       "style": {
-        "height": 40,
-        "width": 40,
-        "background-color": "#ad1a66",
-        "label": "data(label)",
-        "border-color": "black"
+        "background-color": "#030159"
+      }
+    },
+
+    {
+      "selector": ".mso",
+      "style": {
+        "background-color": "#104387"
+      }
+    },
+
+    {
+      "selector": ".zone",
+      "style": {
+        "background-color": "#077e91"
+      }
+    },
+
+    {
+      "selector": ".site",
+      "style": {
+        "background-color": "#00ffbf"
+      }
+    },
+
+    {
+      "selector": ".site.highlighted",
+      "style": {
+        "background-color": "#e7ea17"
       }
     },
   
@@ -28,13 +65,6 @@
     },
 
     {
-      "selector": ":parent",
-      "style": {
-        "background-opacity": 0.333
-      }
-    },
-
-    {
       "selector": ".interZoneLink",
       "style": {
         "line-color": "#33071e"
@@ -47,5 +77,76 @@
         "text-valign": "top",
         "text-halign": "center"
       }
-    }
-  ]
+    },
+  
+{
+  "selector": "node.highlighted",
+   "style": {
+
+    "width": 4,
+    "z-index": 9999
+  }
+},
+
+{
+  "selector": "edge.highlighted",
+  "style": {
+
+    "width": 4,
+    "z-index": 9999
+  }
+},
+
+{
+  "selector": ".faded",
+  "style": {
+    "events": "no"
+  }
+},
+
+{
+  "selector": "node.faded",
+  "style": {
+    "opacity": 0.08
+  }
+},
+
+{
+  "selector": "edge.faded",
+  "style" : {
+    "opacity": 0.06
+  }
+},
+
+{
+  "selector": ".hidden", 
+  "style": {
+    "display": "none"
+  }
+},
+
+{
+  "selector": ".highlighted",
+  "style": {
+  
+  }
+}, 
+
+{
+  "selector": "node:selected",
+  "style": {
+    "width": 40,
+    "height": 40,
+    "border-color": "#bbdbf7",
+    "border-opacity": 0.5,
+    "border-width": 10
+  }
+},
+
+{  
+  "selector": ".filtered",
+  "style": {
+    "display": "none"
+  }
+}
+]
