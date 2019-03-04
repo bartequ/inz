@@ -216,8 +216,6 @@ function divideStructureIntoNodesAndEdges(data) {
             edges.push(data[i]);
         }
     }
-    let x = {nodes, edges};
-    console.log(x);
     return {nodes, edges};
 }
 
